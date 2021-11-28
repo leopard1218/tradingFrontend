@@ -138,7 +138,8 @@ const Router = () => {
                 <Route exact path='/verification/:verifyCode' component={Verification} />
                 <Route exact path='/resetPassword/:resetCode' component={ResetPassword} />
                 <Route exact path='/' component={Home} />
-                <Route exact path='*' component={Error} />
+                <Route path='/404' component={Error} />
+                <Redirect to="/404" />
               </Suspense>
               {LayoutRoutes.map(route => {
                 return (
