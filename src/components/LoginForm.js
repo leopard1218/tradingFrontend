@@ -1,4 +1,4 @@
-import { useState, useContext, Fragment } from 'react'
+import { useState, useContext, Fragment, useEffect } from 'react'
 import classnames from 'classnames'
 import { useSkin } from '@hooks/useSkin'
 import { useDispatch } from 'react-redux'
@@ -8,6 +8,8 @@ import { AbilityContext } from '@src/utility/context/Can'
 import { Link, useHistory } from 'react-router-dom'
 import InputPasswordToggle from '@components/input-password-toggle'
 import { isObjEmpty } from '@utils'
+import setAuthToken from '../utils/setAuthToken'
+import jwt_decode from 'jwt-decode'
 import {
   Row,
   Col,
@@ -36,8 +38,12 @@ const LoginForm = props => {
   const illustration = skin === 'dark' ? 'login-v2-dark.svg' : 'login-v2.svg',
     source = require(`@src/assets/images/pages/${illustration}`).default
 
+  useEffect(() => {
+    const token = localStorage.getItem('jwtToken')
+    if (token) history.push('/')
+  }, [])
   const onSubmit = async data => {
-  
+
     if (isObjEmpty(errors)) {
       console.log('calling api')
       axios.post(`${API_URL}/auth/login`, {
@@ -49,17 +55,22 @@ const LoginForm = props => {
             { transition: Slide, hideProgressBar: true, autoClose: 2000 }
           )
         } else {
-          const { firstName, lastName } = res.data
+          const { token } = res.data
+          localStorage.setItem('jwtToken', token)
+          // Set token to Authentication header
+          setAuthToken(token)
+          // Get the user by the token
+          const userDecoded = jwt_decode(token)
+          console.log(userDecoded)
           toast.success(
-            <ToastContent success title={`Welcome, ${`${firstName} ${lastName}` || 'John Doe'}`} body='You have successfully logged in to Trading. Now you can start trading. Enjoy!' />,
+            <ToastContent success title={`Welcome, ${`${userDecoded.firstName} ${userDecoded.lastName}` || 'John Doe'}`} body='You have successfully logged in to Trading. Now you can start trading. Enjoy!' />,
             { transition: Slide, hideProgressBar: true, autoClose: 2000 }
           )
-          localStorage.setItem('user', JSON.stringify(res.data))
           history.push('/statistics')
         }
       })
     }
-  
+
     // if (isObjEmpty(errors)) {
     //   useJwt
     //     .login({ email, password })
@@ -81,7 +92,7 @@ const LoginForm = props => {
     <div className='auth-wrapper auth-v2' style={{ minHeight: '500px', height: '100%' }}>
       <Row className='auth-inner m-0' style={{ overflow: 'none', width: '100%', height: '100%', marginLeft: '', marginRight: '', display: 'flex', alignItems: 'center', backgroundColor: '#242b3f' }}>
         <Col className='d-flex pt-1 pb-1' lg='12' md='12' sm='12' style={{ height: '90%' }}>
-          <Col sm='12' md='6' lg='6' style={{ backgroundImage: 'Url(/banners/6.jpg)', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }} onClick={e => history.push('/')}/>
+          <Col sm='12' md='6' lg='6' style={{ backgroundImage: 'Url(/banners/6.jpg)', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }} onClick={e => history.push('/')} />
           <Col className='px-3 mx-auto' sm='12' md='5' lg='5' style={{ borderRadius: '10px', paddingTop: '30px', paddingBottom: '30px', height: '', display: 'flex', alignItems: 'center' }}>
             <Col xs='12' sm='12' md='12' lg='12' xl='12'>
               <CardTitle tag='h2' className='font-weight-bold mb-1 text-white'>

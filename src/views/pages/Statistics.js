@@ -16,6 +16,7 @@ import {
   FormGroup, Label, Input
 } from 'reactstrap'
 import ApexChart from './chart'
+import jwt_decode from 'jwt-decode'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faShoppingBag, faHistory } from '@fortawesome/free-solid-svg-icons'
 import { faRocketchat } from '@fortawesome/free-brands-svg-icons'
@@ -29,6 +30,7 @@ import './statistics.css'
 import axios from 'axios'
 import API_URL from '../../constants/apiUrl'
 import { toast, Slide } from 'react-toastify'
+import { useHistory } from 'react-router-dom'
 const ToastContent = () => (
   <Fragment>
     <div className='toastify-header'>
@@ -62,6 +64,7 @@ const Statistics = props => {
   const [isCheck, setCheck] = useState(false)
   const { register, errors, handleSubmit } = useForm()
   const [selCurrency, setSelCurrency] = useState(0)
+  const history = useHistory()
   const delayTime = 5000
   let timer
   const stateFlag = (entry, trade) => {
@@ -95,23 +98,28 @@ const Statistics = props => {
     setUpdate(Date.now())
   }
   useEffect(async () => {
-    try {
-      // setBalance(JSON.parse(localStorage.getItem('user')).balance)
-      const dat = await axios.get(`${API_URL}/trade`)
-      if (dat.data.length > 0) {
-        setData(dat.data)
-      } else {
-
+    const token = localStorage.getItem('jwtToken')
+    if (!token) history.push('/login')
+    else {
+      try {
+        // setBalance(JSON.parse(localStorage.getItem('user')).balance)
+        const dat = await axios.get(`${API_URL}/trade`)
+        if (dat.data.length > 0) {
+          setData(dat.data)
+        }
+        const userDecoded = jwt_decode(token)
+        console.log(userDecoded)
+        const initUser = await axios.get(`${API_URL}/users/${userDecoded.id}`)
+        setUser(initUser.data)
+        setBalance(initUser.data.balance)
+        timer = setInterval(() => {
+          timeFunc()
+        }, 1000)
+      } catch (err) {
+        console.log('err')
       }
-      const initUser = await axios.get(`${API_URL}/users/${JSON.parse(localStorage.getItem('user'))._id}`)
-      setUser(initUser.data)
-      setBalance(initUser.data.balance)
-      timer = setInterval(() => {
-        timeFunc()
-      }, 1000)
-    } catch (err) {
-      console.log('err')
     }
+
   }, [])
 
   const toggle = tab => {
@@ -183,10 +191,10 @@ const Statistics = props => {
     <div className='auth-wrapper auth-v2 background' style={{ flexDirection: 'column', paddingBottom: '20px' }}>
       <Row className='auth-inner m-0' style={{ overflow: 'none', height: 'auto' }}>
         <Col lg='1' sm='12' md='12' xl='1' style={{ marginTop: '40px' }}>
-          <Row style={{ margin: '10px' }}>
+          <Row style={{ cursor: 'pointer', margin: '10px' }}>
             <Col>
               <Row style={{ justifyContent: 'center', marginBottom: '10px' }}>
-                <FontAwesomeIcon icon={faShoppingBag} size='2x' style={{ cursor: 'pointer', width: '20px', height: '20px' }} />
+                <FontAwesomeIcon icon={faShoppingBag} size='2x' style={{ width: '20px', height: '20px' }} />
               </Row>
               <Row style={{ justifyContent: 'center', fontSize: '12px' }}>
                 {/* <Row style={{ fontSize: '15px', justifyContent: 'center' }}> */}
@@ -198,10 +206,10 @@ const Statistics = props => {
               </Row>
             </Col>
           </Row>
-          <Row style={{ margin: '10px' }}>
+          <Row style={{ cursor: 'pointer', margin: '10px' }} onClick={() => setBasicModal(!basicModal)}>
             <Col>
               <Row style={{ justifyContent: 'center', marginBottom: '10px' }}>
-                <FontAwesomeIcon icon={faHistory} size='2x' style={{ cursor: 'pointer', width: '20px', height: '20px' }} onClick={() => setBasicModal(!basicModal)} />
+                <FontAwesomeIcon icon={faHistory} size='2x' style={{ width: '20px', height: '20px' }} />
               </Row>
               <Row style={{ justifyContent: 'center', fontSize: '12px' }}>
                 {/* <Row style={{ fontSize: '15px', justifyContent: 'center' }}> */}
@@ -213,10 +221,10 @@ const Statistics = props => {
               </Row>
             </Col>
           </Row>
-          <Row style={{ margin: '10px' }}>
+          <Row style={{ cursor: 'pointer', margin: '10px' }}>
             <Col>
               <Row style={{ justifyContent: 'center', marginBottom: '10px' }}>
-                <FontAwesomeIcon icon={faRocketchat} size='2x' style={{ cursor: 'pointer', width: '20px', height: '20px' }} />
+                <FontAwesomeIcon icon={faRocketchat} size='2x' style={{ width: '20px', height: '20px' }} />
               </Row>
               <Row style={{ justifyContent: 'center', fontSize: '12px' }}>
                 {/* <Row style={{ fontSize: '15px', justifyContent: 'center' }}> */}

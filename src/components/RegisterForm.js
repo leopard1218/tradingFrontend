@@ -51,25 +51,25 @@ const RegisterForm = ({ setForm }) => {
 
   const onSubmit = data => {
     if (isObjEmpty(errors)) {
-      // axios.post(`${API_URL}/users`, {
-      //   firstName, lastName, email, birthday, password
-      // }).then(res => {
-      //   console.log(res)
-      //   if (res.data.error) {
-      //     toast.error(
-      //       <ToastContent title='Sign Up' body={res.data.error} />,
-      //       { transition: Slide, hideProgressBar: true, autoClose: 2000 }
-      //     )
-      //     toast.error(res.data.error)
-      //   } else {
-      //     toast.success(
-      //       <ToastContent success title={`Welcome, ${`${firstName} ${lastName}` || 'John Doe'}`} body='You have successfully signed up to Trading. Now please verify your email.' />,
-      //       { transition: Slide, hideProgressBar: true, autoClose: 2000 }
-      //     )
-      //     // localStorage.setItem('user', JSON.stringify(res.data))
-      //     history.push('/emailSent')
-      //   }
-      // })
+      axios.post(`${API_URL}/users`, {
+        firstName, lastName, email, birthday, password
+      }).then(res => {
+        console.log(res)
+        if (res.data.error) {
+          toast.error(
+            <ToastContent title='Sign Up' body={res.data.error} />,
+            { transition: Slide, hideProgressBar: true, autoClose: 2000 }
+          )
+          // toast.error(res.data.error)
+        } else {
+          toast.success(
+            <ToastContent success title={`Welcome, ${`${firstName} ${lastName}` || 'John Doe'}`} body='You have successfully signed up to Trading. Now please verify your email.' />,
+            { transition: Slide, hideProgressBar: true, autoClose: 2000 }
+          )
+          // localStorage.setItem('user', JSON.stringify(res.data))
+          history.push('/emailSent')
+        }
+      })
     }
   }
 
@@ -151,7 +151,7 @@ const RegisterForm = ({ setForm }) => {
                     innerRef={register({ required: true, validate: value => value !== '' })}
                     value={birthday}
                     onChange={day => setBirthday(day)}
-                    renderInput={(params) => <TextField style={{ height: "65px" }} className='form-control' {...params} />}
+                    renderInput={(params) => <TextField style={{ height: "40px", lineHeight: "20px" }} className='form-control' {...params} />}
                   />
                 </LocalizationProvider>
 

@@ -57,7 +57,7 @@ const Verficiation = props => {
             { transition: Slide, hideProgressBar: true, autoClose: 2000 }
           )
           localStorage.setItem('user', JSON.stringify(res.data))
-          history.push('/statistics')
+          history.push('/login')
         }
       })
   }, [])

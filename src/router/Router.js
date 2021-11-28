@@ -127,17 +127,18 @@ const Router = () => {
             <Switch>
               <Suspense fallback={null}>
                 {/* Layout Wrapper to add classes based on route's layout, appLayout and className */}
-                <Route path='/statistics' component={Statistics} />
-                <Route path='/emailSent' component={EmailSent} />
-                <Route path='/products' component={Products} />
-                <Route path='/company' component={Company} />
-                <Route path='/milestones' component={Milestones} />
-                <Route path='/institutional' component={Institutional} />
-                <Route path='/account' component={Account} />
-                <Route path='/admin' component={Admin} />
-                <Route path='/verification/:verifyCode' component={Verification} />
-                <Route path='/resetPassword/:resetCode' component={ResetPassword} />
+                <Route exact path='/statistics' component={Statistics} />
+                <Route exact path='/emailSent' component={EmailSent} />
+                <Route exact path='/products' component={Products} />
+                <Route exact path='/company' component={Company} />
+                <Route exact path='/milestones' component={Milestones} />
+                <Route exact path='/institutional' component={Institutional} />
+                <Route exact path='/account' component={Account} />
+                <Route exact path='/admin' component={Admin} />
+                <Route exact path='/verification/:verifyCode' component={Verification} />
+                <Route exact path='/resetPassword/:resetCode' component={ResetPassword} />
                 <Route exact path='/' component={Home} />
+                <Route exact path='*' component={Error} />
               </Suspense>
               {LayoutRoutes.map(route => {
                 return (

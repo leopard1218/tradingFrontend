@@ -1,6 +1,6 @@
 // ** React Imports
-import { Fragment, useState } from 'react'
-
+import { Fragment, useState, useEffect } from 'react'
+import jwt_decode from 'jwt-decode'
 // ** Third Party Components
 import { NavItem } from 'reactstrap'
 import {
@@ -10,11 +10,21 @@ import {
 
 const ThemeNavbar = props => {
   // ** Props
-  const [user, setUser] = useState(localStorage.getItem('user'))
+  const [user, setUser] = useState()
+  useEffect(() => {
+    const token = localStorage.getItem('jwtToken')
+    if (token) {
+      const userDecoded = jwt_decode(token)
+      setUser(userDecoded)
+    } else {
+      setUser('')
+    }
+  }, [])
+
   const location = useLocation()
 
   const logout = () => {
-    localStorage.removeItem('user')
+    localStorage.removeItem('jwtToken')
     setUser('')
   }
 
@@ -53,12 +63,12 @@ const ThemeNavbar = props => {
         </NavItem>}
         {
           !!user ? location.pathname === '/statistics' ? <NavItem key='logout' className='d-none d-block'>
-            <Link className='nav-link text-white' to='/company'><i className="fa fa-sign-out"></i>Exit</Link>
+            <Link className='nav-link text-white' to='/'><i className="fa fa-sign-out"></i>Exit</Link>
           </NavItem> : <NavItem key='logout' className='d-none d-block' onClick={e => logout()}>
-              <Link className='nav-link text-white' to='/'>Logout</Link>
-            </NavItem> : <NavItem key='login' className='d-none d-block'>
-              <Link className='nav-link text-white' to='/login'>Login</Link>
-            </NavItem>
+            <Link className='nav-link text-white' to='/'>Logout</Link>
+          </NavItem> : <NavItem key='login' className='d-none d-block'>
+            <Link className='nav-link text-white' to='/login'>Login</Link>
+          </NavItem>
         }
       </ul>
     </Fragment>
