@@ -76,56 +76,22 @@ const Router = () => {
   // ** Init Error Component
   const Error = lazy(() => import('@src/views/pages/misc/Error'))
 
-  /**
-   ** Final Route Component Checks for Login & User Role and then redirects to the route
-   */
-  const FinalRoute = props => {
-    const route = props.route
-    let action, resource
-
-    // ** Assign vars based on route meta
-    if (route.meta) {
-      action = route.meta.action ? route.meta.action : null
-      resource = route.meta.resource ? route.meta.resource : null
-    }
-
-
-    // ** If none of the above render component
-    return <route.component {...props} />
-
-  }
-
-  // ** Return Route to Render
-  const ResolveRoutes = () => {
-    return Object.keys(Layouts).map((layout, index) => {
-      // ** Convert Layout parameter to Layout Component
-      // ? Note: make sure to keep layout and component name equal
-
-      const LayoutTag = Layouts[layout]
-
-      // ** Get Routes and Paths of the Layout
-      const { LayoutRoutes, LayoutPaths } = LayoutRoutesAndPaths(layout)
-
-      // ** We have freedom to display different layout for different route
-      // ** We have made LayoutTag dynamic based on layout, we can also replace it with the only layout component,
-      // ** that we want to implement like VerticalLayout or HorizontalLayout
-      // ** We segregated all the routes based on the layouts and Resolved all those routes inside layouts
-
-      // ** RouterProps to pass them to Layouts
-      const routerProps = {}
-
-      return (
-        <Route path={LayoutPaths} key={index}>
-          <VerticalLayout
-            routerProps={routerProps}
-            layout={layout}
-            setLayout={setLayout}
-            transition={transition}
-            setTransition={setTransition}
-            currentActiveItem={currentActiveItem}
-          >
+  return (
+    <AppRouter basename={process.env.REACT_APP_BASENAME}>
+      <Switch>
+        <Route path='/login' component={LoginForm} />
+        <Route path='/forgotPassword' component={ForgotPasswordForm} />
+        <Route
+          exact
+          path='/misc/not-authorized'
+          render={props => (
+            <Layouts.BlankLayout>
+              <NotAuthorized />
+            </Layouts.BlankLayout>
+          )}
+        />
+        <VerticalLayout>
             <Switch>
-              <Suspense fallback={null}>
                 {/* Layout Wrapper to add classes based on route's layout, appLayout and className */}
                 <Route exact path='/statistics' component={Statistics} />
                 <Route exact path='/emailSent' component={EmailSent} />
@@ -138,86 +104,11 @@ const Router = () => {
                 <Route exact path='/verification/:verifyCode' component={Verification} />
                 <Route exact path='/resetPassword/:resetCode' component={ResetPassword} />
                 <Route exact path='/' component={Home} />
-                <Route path='/404' component={Error} />
-                <Redirect to="/404" />
-              </Suspense>
-              {LayoutRoutes.map(route => {
-                return (
-                  <Route
-                    key={route.path}
-                    path={route.path}
-                    exact={route.exact === true}
-                    render={props => {
-                      // ** Assign props to routerProps
-                      Object.assign(routerProps, {
-                        ...props,
-                        meta: route.meta
-                      })
-
-                      return (
-                        <Suspense fallback={null}>
-                          {/* Layout Wrapper to add classes based on route's layout, appLayout and className */}
-                          <LayoutWrapper
-                            layout={DefaultLayout}
-                            transition={transition}
-                            setTransition={setTransition}
-                            /* Conditional props */
-                            /*eslint-disable */
-                            {...(route.appLayout
-                              ? {
-                                appLayout: route.appLayout
-                              }
-                              : {})}
-                            {...(route.meta
-                              ? {
-                                routeMeta: route.meta
-                              }
-                              : {})}
-                            {...(route.className
-                              ? {
-                                wrapperClass: route.className
-                              }
-                              : {})}
-                          /*eslint-enable */
-                          >
-
-                            <FinalRoute route={route} {...props} />
-                          </LayoutWrapper>
-                        </Suspense>
-                      )
-                    }}
-                  />
-                )
-              })}
+                <Route path='*' component={Error} />              
             </Switch>
           </VerticalLayout>
-        </Route>
-      )
-    })
-  }
-
-  return (
-    <AppRouter basename={process.env.REACT_APP_BASENAME}>
-      <Switch>
-        {/* If user is logged in Redirect user to DefaultRoute else to login */}
-        {/* Not Auth Route */}
-        {/* <Route path='/signup' component={RegisterForm} /> */}
-        <Route path='/login' component={LoginForm} />
-        <Route path='/forgotPassword' component={ForgotPasswordForm} />
-        <Route
-          exact
-          path='/misc/not-authorized'
-          render={props => (
-            <Layouts.BlankLayout>
-              <NotAuthorized />
-            </Layouts.BlankLayout>
-          )}
-        />
-        {ResolveRoutes()}
-
-
         {/* NotFound Error page */}
-        <Route path='*' component={Error} />
+        <Route exact path='*' component={Error} />
       </Switch>
     </AppRouter>
   )

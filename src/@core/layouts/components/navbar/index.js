@@ -58,7 +58,7 @@ const ThemeNavbar = props => {
         {location.pathname === '/statistics' ? "" : <NavItem key='intitutional' className='d-none d-block'>
           <Link className='nav-link text-white' to='/institutional'>Institutional</Link>
         </NavItem>}
-        {location.pathname === '/statistics' ? "" : localStorage.getItem('user') === null ? "" : <NavItem key='account' className='d-none d-block'>
+        {location.pathname === '/statistics' ? "" : !localStorage.getItem('jwtToken') ? "" : <NavItem key='account' className='d-none d-block'>
           <Link className='nav-link text-white' to='/account'>Account</Link>
         </NavItem>}
         {

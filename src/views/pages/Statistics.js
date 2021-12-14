@@ -63,7 +63,8 @@ const Statistics = props => {
   const [uint, setUint] = useState('USD')
   const [isCheck, setCheck] = useState(false)
   const { register, errors, handleSubmit } = useForm()
-  const [selCurrency, setSelCurrency] = useState(0)
+  const [selCurrency, setSelCurrency] = useState(1)
+  const [buyAmount, setBuyAmount] = useState(0)
   const history = useHistory()
   const delayTime = 5000
   let timer
@@ -505,7 +506,7 @@ const Statistics = props => {
           <Form className='auth-login-form mt-2' onSubmit={handleSubmit(onSubmit)}>
             <Row>
               <Col xl='4' lg='4' md='4' >
-                <Row className={selCurrency === 1 ? 'sidebar active' : 'sidebar'} onClick={() => setSelCurrency(1)}>
+                {/* <Row className={selCurrency === 0 ? 'sidebar active' : 'sidebar'} onClick={() => setSelCurrency(0)}>
                   <Col xl='3' lg='3' md='3' >
                     <img src='./assets/img/mastercard.svg' width='40px' height='40px' />
                     <i className='fa fa-cc-visa sidebar-icon visa-icon' ></i>
@@ -514,10 +515,10 @@ const Statistics = props => {
                     <p style={{ color: 'white' }}>Visa / Mastercard</p>
                     <p>instant</p>
                   </Col>
-                </Row>
+                </Row> */}
 
                 {/* <hr /> */}
-                <Row className={selCurrency === 2 ? 'sidebar active' : 'sidebar'} onClick={() => setSelCurrency(2)}>
+                <Row className={selCurrency === 1 ? 'sidebar active' : 'sidebar'} onClick={() => setSelCurrency(1)}>
                   <Col xl='3' lg='3' md='3' >
                     <img src='./assets/img/Uiconstock-E-Commerce-Bitcoin.svg' />
                   </Col>
@@ -549,7 +550,21 @@ const Statistics = props => {
               <Col xl='8' lg='8' md='8'>
                 <Row>
                   <Col xl='12' lg='12' md='12'>
-                    <div className='creditcard'>
+                    <Input  onChange={(e) => setBuyAmount(e.target.value)} />
+                    <form action="https://www.coinpayments.net/index.php" method="post" target="_top">
+                      <input type="hidden" name="cmd" value="_pay_simple" />
+                      <input type="hidden" name="reset" value="1" />
+                      <input type="hidden" name="merchant" value="528f0bb9514bf1cfaffd46fdbfbf3a48" />
+                      <input type="hidden" name="currency" value="LTCT" />
+                      <input type="hidden" name="amountf" value={buyAmount} />
+                      <input type="hidden" name="item_name" value="Test Item" />
+                      <input type="hidden" name="item_desc" value="Item Description" />
+                      <input type="hidden" name="want_shipping" value="1" />
+                      <input type="hidden" name="success_url" value="http://www.fynance.capital/statistics/success" />
+                      <input type="hidden" name="cancel_url" value="http://www.fynance.capital/statistics/cancel" />
+                      <input type="image" src="https://www.coinpayments.net/images/pub/buynow-med.png" alt="Buy Now with CoinPayments.net" />
+                    </form>
+                    {/* <div className='creditcard'>
                       <div className='left-creditcard'>
                         <div style={{ width: '80%', paddingTop: '80px' }}>
                           <FormGroup >
@@ -591,10 +606,10 @@ const Statistics = props => {
                           <p style={{ position: 'absolute', top: '220px', left: '500px', width: '100px' }}>The last three digits on the reverse</p>
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                   </Col>
                 </Row>
-                <Row>
+                {/* <Row>
                   <Col xl='12' lg='12' md='12'>
                     <div className="form-check form-check-inline" style={{ padding: '20px' }}>
                       <Input className="form-check-input" type="checkbox" id="inlineCheckbox2" value="unchecked" onClick={() => setCheck(!isCheck)} />
@@ -610,7 +625,6 @@ const Statistics = props => {
                       </FormGroup>
                     </div>
                     <div style={{ width: "20%", float: 'left' }}>
-                      {/* <div className='demo-inline-spacing'> */}
                       <UncontrolledButtonDropdown style={{ padding: '5px', width: '100px', height: '55px' }}>
                         <Button outline color='secondary'>
                           {uint}
@@ -628,14 +642,13 @@ const Statistics = props => {
                           </DropdownItem>
                         </DropdownMenu>
                       </UncontrolledButtonDropdown>
-                      {/* </div> */}
                     </div>
                     <div style={{ width: "20%", float: 'left' }}>
                       <button type="submit" className="btn btn-success waves-effect waves-float waves-light" style={{ width: '200px', height: '45px' }}>Continue</button>
                     </div>
                   </Col>
                   <img src='./assets/img/back.png' style={{ paddingLeft: '100px' }} />
-                </Row>
+                </Row> */}
 
               </Col>
 

@@ -19,6 +19,28 @@ if (localStorage.getItem('jwtToken')) {
   }
 
 }
+
+// import Affiliate from 'affiliate' // window.Affiliate is automatically accessible if using a CDN
+
+// const aff = Affiliate.create({
+//   log: true, // enable logging
+//   tags: [
+//     {
+//       hosts: ['fynance.capital', 'www.fynance.capital'], // a list of applicable hosts
+//       query: {
+//         ref: 'my-tag' // will output a url with ?ref=my-tag
+//       }
+//       // modify: (url) => {
+//       //   // a function that directly modifies the URL
+//       //   url.set(`pathname ${url.pathname }-tag`)
+//       //   url.set(`hostname${url.hostname}.rdr.fynance.capital`)
+//       //   return url
+//       // }
+//     }
+//   ]
+// })
+
+// aff.attach()
 const App = props => <Router />
 
 export default App

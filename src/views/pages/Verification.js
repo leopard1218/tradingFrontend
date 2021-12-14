@@ -29,7 +29,7 @@ import ToastContent from '../../components/ToastContent'
 
 import '@styles/base/pages/page-auth.scss'
 import API_URL from '../../constants/apiUrl'
-
+// import jwt_decode from 'jwt_decode'
 const Verficiation = props => {
   const [skin, setSkin] = useSkin()
   const [status, setStatus] = useState(0)
@@ -56,7 +56,7 @@ const Verficiation = props => {
             <ToastContent success title={`Welcome, ${`${firstName} ${lastName}` || 'John Doe'}`} body='You have successfully verified your email. Now you can start trading. Enjoy!'/>,
             { transition: Slide, hideProgressBar: true, autoClose: 2000 }
           )
-          localStorage.setItem('user', JSON.stringify(res.data))
+          // localStorage.setItem('user', JSON.stringify(res.data))
           history.push('/login')
         }
       })

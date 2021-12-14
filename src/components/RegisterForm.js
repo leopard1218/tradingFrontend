@@ -12,7 +12,7 @@ import TextField from '@mui/material/TextField'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import LocalizationProvider from '@mui/lab/LocalizationProvider'
 import DatePicker from '@mui/lab/DatePicker'
-
+import sgMail from '@sendgrid/mail'
 
 import {
   Row,
@@ -29,14 +29,6 @@ import ToastContent from './ToastContent'
 import '@styles/base/pages/page-auth.scss'
 import API_URL from '../constants/apiUrl'
 
-/*
-"firstName":"Dragan",
-    "lastName":"Draganov",
-    "email":"smartdev@innovdev.com",
-    "birthday":"2000-08-04",
-    "password":"vnfmsgksmf2084"
-*/
-
 const RegisterForm = ({ setForm }) => {
   const ability = useContext(AbilityContext)
   const dispatch = useDispatch()
@@ -51,6 +43,7 @@ const RegisterForm = ({ setForm }) => {
 
   const onSubmit = data => {
     if (isObjEmpty(errors)) {
+      // console.log(birthday.toLocaleDateString())
       axios.post(`${API_URL}/users`, {
         firstName, lastName, email, birthday, password
       }).then(res => {
@@ -135,7 +128,7 @@ const RegisterForm = ({ setForm }) => {
                 <Label className='form-label text-white' for='birthday'>
                   Birthday
                 </Label>
-                {/* <Input
+                <Input
                   autoFocus
                   type='date'
                   value={birthday}
@@ -144,8 +137,8 @@ const RegisterForm = ({ setForm }) => {
                   onChange={e => setBirthday(e.target.value)}
                   className={classnames({ 'is-invalid': errors['birthday'] })}
                   innerRef={register({ required: true, validate: value => value !== '' })}
-                /> */}
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                />
+                {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
                   <DatePicker
                     className={classnames({ 'is-invalid': errors['birthday'] })}
                     innerRef={register({ required: true, validate: value => value !== '' })}
@@ -153,7 +146,7 @@ const RegisterForm = ({ setForm }) => {
                     onChange={day => setBirthday(day)}
                     renderInput={(params) => <TextField style={{ height: "40px", lineHeight: "20px" }} className='form-control' {...params} />}
                   />
-                </LocalizationProvider>
+                </LocalizationProvider> */}
 
               </FormGroup>
               <FormGroup>

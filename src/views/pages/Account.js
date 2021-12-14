@@ -8,6 +8,7 @@ import { AbilityContext } from '@src/utility/context/Can'
 import { Link, useHistory } from 'react-router-dom'
 import InputPasswordToggle from '@components/input-password-toggle'
 import { isObjEmpty } from '@utils'
+import jwt_decode from 'jwt-decode'
 import ToastContent from '../../components/ToastContent'
 import {
   Row,
@@ -36,12 +37,16 @@ const Account = () => {
   const { register, errors, handleSubmit } = useForm()
   const { register: register1, errors: errors1, handleSubmit: handleSubmit1 } = useForm()
   useEffect(async () => {
-    const user = JSON.parse(localStorage.getItem('user'))
-    console.log(user)
-    setFirstName(user.firstName)
-    setLastName(user.lastName)
-    setBirthday(user.birthday)
-    setId(user._id)
+    const token = localStorage.getItem('jwtToken')
+    if (!token) history.push('/login')
+    else {
+      const userDecoded = jwt_decode(token)
+      setFirstName(userDecoded.firstName)
+      setLastName(userDecoded.lastName)
+      setBirthday(userDecoded.birthday)
+      setId(userDecoded.id)
+    }
+
   }, [])
   const onSubmit = (e) => {
     if (isObjEmpty(errors && id !== undefined)) {
@@ -51,12 +56,15 @@ const Account = () => {
       }).then(res => {
         console.log(res.data)
         if (res.data !== null) {
-          localStorage.setItem('user', JSON.stringify(res.data))
-          setFirstName(res.data.firstName)
-          setLastName(res.data.lastName)
-          setBirthday(res.data.birthday)
+          const { token } = res.data
+          localStorage.setItem('jwtToken', token)
+          const userDecoded = jwt_decode(token)
+          console.log(userDecoded)
+          setFirstName(userDecoded.firstName)
+          setLastName(userDecoded.lastName)
+          setBirthday(userDecoded.birthday)
           toast.success(
-            <ToastContent success title={`Welcome, ${`${res.data.firstName} ${res.data.lastName}` || 'John Doe'}`} body='You have successfully updated' />,
+            <ToastContent success title={`Welcome, ${`${firstName} ${lastName}` || 'John Doe'}`} body='You have successfully updated' />,
             { transition: Slide, hideProgressBar: true, autoClose: 2000 }
           )
         }
@@ -73,14 +81,14 @@ const Account = () => {
         currentPassword, password
       }).then(res => {
         console.log(res.data)
-        if (res.data !== "incorrect") {
+        if (res.data.error !== "Password incorrect") {
           toast.success(
-            <ToastContent success title={`Welcome, ${`${res.data.firstName} ${res.data.lastName}` || 'John Doe'}`} body='Your password successfully updated' />,
+            <ToastContent success title={`Welcome`} body='Your password successfully updated' />,
             { transition: Slide, hideProgressBar: true, autoClose: 2000 }
           )
         } else {
           toast.error(
-            <ToastContent danger title="Incorrect password" body='Your password was wrong' />,
+            <ToastContent danger title="Password incorrect" body='Your password was wrong' />,
             { transition: Slide, hideProgressBar: true, autoClose: 2000 }
           )
         }
@@ -197,7 +205,7 @@ const Account = () => {
                   </Label>
                 </div>
                 <InputPasswordToggle
-                  value={passconf}l
+                  value={passconf}
                   id='conf-password'
                   name='conf-password'
                   className='input-group-merge'
