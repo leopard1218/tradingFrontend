@@ -159,7 +159,6 @@ const RegisterForm = ({ setForm }) => {
                   value={password}
                   id='login-password'
                   name='login-password'
-                  className='input-group-merge'
                   onChange={e => setPassword(e.target.value)}
                   className={classnames({ 'is-invalid': errors['login-password'] })}
                   innerRef={register({ required: true, validate: value => value !== '' && value === passconf })}
@@ -175,7 +174,6 @@ const RegisterForm = ({ setForm }) => {
                   value={passconf}
                   id='conf-password'
                   name='conf-password'
-                  className='input-group-merge'
                   onChange={e => setPassconf(e.target.value)}
                   className={classnames({ 'is-invalid': errors['conf-password'] })}
                   innerRef={register({ required: true, validate: value => value !== '' && value === password })}
